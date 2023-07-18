@@ -10,7 +10,7 @@ HISTORY_PATH = "Responses/"
 TEMPERATURE = 0.2
 
 # OpenAI API key path and model ID
-API_KEY_PATH = "c:\\Users\\14015\\Desktop\\api_key.txt"
+API_KEY_PATH = "api_key.txt"
 MODEL_ID = "gpt-4"
 
 
