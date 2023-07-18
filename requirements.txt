@@ -1,0 +1,8 @@
+pyaudio
+speechrecognition
+pyttsx3
+openai
+json
+datetime
+
+
