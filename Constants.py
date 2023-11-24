@@ -11,7 +11,7 @@ TEMPERATURE = 0.2
 
 # OpenAI API key path and model ID
 API_KEY_PATH = "api_key.txt"
-MODEL_ID = "gpt-4"
+MODEL_ID = "gpt-3.5-turbo"
 
 
 # Recorder parameters

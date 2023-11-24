@@ -5,7 +5,7 @@ import json
 
 class Conversation:
     def __init__(self):
-        self.openai.api_key = open(Constants.API_KEY_PATH, "r").read().strip('\n')
+        openai.api_key = open(Constants.API_KEY_PATH, "r").read().strip('\n')
         self.message_history = [{"role": "user", "content": open(Constants.PROMPT_PATH, "r").read().strip('\n')}, {"role": "assistant", "content": f"OK"}]
         
     def chat(self, input, role = "user"):
