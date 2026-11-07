@@ -1,0 +1,7 @@
+__pycache__/
+*.py[cod]
+*.sw[op]
+.env
+api_key.txt
+history/
+.pytest_cache/
