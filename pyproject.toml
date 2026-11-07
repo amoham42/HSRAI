@@ -1,0 +1,74 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "hsrgpt"
+version = "0.1.0"
+description = "An LLM function-calling agent that talks with people and controls a Toyota Human Support Robot."
+readme = "README.md"
+license = "MIT"
+authors = [{ name = "Arman Mohammadi" }]
+# 3.8 is the floor because ROS Noetic (Ubuntu 20.04), which current HSR software targets, ships Python 3.8.
+requires-python = ">=3.8"
+dependencies = [
+    "openai>=1.40",
+    "pyyaml>=6.0",
+]
+keywords = ["robotics", "llm", "function-calling", "openai", "toyota-hsr", "ros", "human-robot-interaction"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Scientific/Engineering :: Human Machine Interfaces",
+]
+
+[project.optional-dependencies]
+voice = [
+    "SpeechRecognition>=3.10",
+    "pyaudio>=0.2.13",
+    "pyttsx3>=2.90",
+]
+dev = [
+    "pytest>=7.0",
+    "ruff>=0.6",
+    "mypy>=1.10",
+    "types-PyYAML",
+]
+
+[project.scripts]
+hsrgpt = "hsrgpt.__main__:main"
+
+[project.urls]
+Repository = "https://github.com/amoham42/HSRAI"
+Issues = "https://github.com/amoham42/HSRAI/issues"
+
+[tool.hatch.build.targets.sdist]
+include = ["hsrgpt", "tests", "locations.example.yaml", "README.md", "LICENSE"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["hsrgpt"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py38"
+
+[tool.ruff.lint]
+select = ["E", "W", "F", "I", "B", "UP", "SIM", "RUF"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.mypy]
+files = ["hsrgpt"]
+ignore_missing_imports = true
