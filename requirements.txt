@@ -1,8 +1,6 @@
-pyaudio
-speechrecognition
-pyttsx3
-openai
-json
-datetime
-
-
+openai>=1.40
+pyyaml>=6.0
+# voice mode
+SpeechRecognition>=3.10
+pyaudio>=0.2.13
+pyttsx3>=2.90
