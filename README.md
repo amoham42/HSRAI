@@ -1,5 +1,9 @@
 # HSRGPT
 
+[![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+[![Python 3.8+](https://img.shields.io/badge/python-3.8%2B-blue.svg)](pyproject.toml)
+[![Code style: ruff](https://img.shields.io/badge/code%20style-ruff-261230.svg)](https://github.com/astral-sh/ruff)
+
 Talk to Toyota's **Human Support Robot** and have it act on what you say. HSRGPT connects a large language model to the HSR through **function calling**: the model chats with you, decides which robot actions a request needs, calls them, reads back what happened, and keeps going until the job is done. Then it tells you, out loud.
 
 ```
@@ -43,24 +47,32 @@ I started this during my internship at MassRobotics, building demo applications 
 ## Run it
 
 ```sh
-pip install -r requirements.txt
+git clone https://github.com/amoham42/HSRAI.git && cd HSRAI
+pip install -e .                      # keyboard mode and the real-HSR backend
+pip install -e ".[voice]"             # add microphone input and spoken replies
 export OPENAI_API_KEY=sk-...          # never commit it; see .gitignore
 
-python -m hsrgpt                      # type to the simulated robot
-python -m hsrgpt --voice              # talk to it (needs a microphone)
-python -m hsrgpt --hsr locations.yaml --voice   # the real HSR, from its ROS environment
+hsrgpt                                # type to the simulated robot
+hsrgpt --voice                        # talk to it (needs a microphone)
+hsrgpt --hsr locations.yaml --voice   # the real HSR, from its ROS environment
 ```
 
+`python -m hsrgpt` works the same as `hsrgpt`. Editable installs need pip 21.3 or newer (`python -m pip install -U pip`). On Linux, `pyaudio` builds against PortAudio, so install `portaudio19-dev` first.
+
 On the robot, copy `locations.example.yaml` to `locations.yaml` and fill in map poses for your rooms. Choose the model with `--model` or `HSRGPT_MODEL`.
+
+Python 3.8 is the minimum because ROS Noetic (Ubuntu 20.04), the ROS 1 release current HSR software targets, ships Python 3.8. The tests pass on 3.8, 3.9, 3.11 and 3.13. The `hsr.py` backend has **not been tested on a real HSR** yet; everything else is covered by the simulator and the tests below.
 
 ## Tests
 
 ```sh
-pip install -r requirements-dev.txt
-pytest
+pip install -e ".[dev]"
+pytest                    # no network or API key needed
+ruff check . && ruff format --check .
+mypy
 ```
 
-The tests replace the OpenAI client with a scripted one, so they need no network or API key. They cover:
+The tests replace the OpenAI client with a scripted one. They cover:
 - a full fetch-and-deliver task
 - errors flowing back to the model
 - the step limit
@@ -71,3 +83,7 @@ The tests replace the OpenAI client with a scripted one, so they need no network
 ## Safety
 
 This drives a real robot. Keep the emergency stop within reach, run the HSR's own safety checks first, and clear the space it moves in. The relative-move tool is capped at 2 m. Longer trips go through the HSR's navigation stack, which plans around obstacles.
+
+## License
+
+[MIT](LICENSE) © 2023 Arman Mohammadi
