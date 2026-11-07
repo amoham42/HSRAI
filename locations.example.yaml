@@ -1,0 +1,6 @@
+# Named places for --hsr: map-frame pose as [x metres, y metres, yaw degrees].
+# Read them off RViz or `rosrun tf tf_echo map base_footprint` with the robot parked at each spot.
+living room: [0.0, 0.0, 0.0]
+kitchen: [3.2, 1.5, 90.0]
+bedroom: [-2.0, 4.1, 180.0]
+entrance: [5.5, -0.8, -90.0]
