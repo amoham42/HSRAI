@@ -51,22 +51,17 @@ class Agent:
             )
             message = response.choices[0].message
             calls = message.tool_calls or []
-            self.messages.append(
-                {
-                    "role": "assistant",
-                    "content": message.content,
-                    **(
-                        {
-                            "tool_calls": [
-                                {"id": c.id, "type": "function", "function": {"name": c.function.name, "arguments": c.function.arguments}}
-                                for c in calls
-                            ]
-                        }
-                        if calls
-                        else {}
-                    ),
-                }
-            )
+            turn: dict[str, Any] = {"role": "assistant", "content": message.content}
+            if calls:
+                turn["tool_calls"] = [
+                    {
+                        "id": c.id,
+                        "type": "function",
+                        "function": {"name": c.function.name, "arguments": c.function.arguments},
+                    }
+                    for c in calls
+                ]
+            self.messages.append(turn)
             if not calls:
                 return message.content or ""
             for call in calls:

@@ -11,7 +11,9 @@ from hsrgpt.__main__ import main
 
 def test_keyboard_session(monkeypatch, tmp_path, capsys):
     replies = iter(["Hello there!", "On my way out, then."])
-    fake = NS(chat=NS(completions=NS(create=lambda **_: NS(choices=[NS(message=NS(content=next(replies), tool_calls=None))]))))
+    fake = NS(
+        chat=NS(completions=NS(create=lambda **_: NS(choices=[NS(message=NS(content=next(replies), tool_calls=None))])))
+    )
     monkeypatch.setattr(openai, "OpenAI", lambda: fake)
     monkeypatch.setenv("OPENAI_API_KEY", "test")
     monkeypatch.setattr(sys, "stdin", io.StringIO("hi\nhow are you\nbye\n"))

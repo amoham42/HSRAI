@@ -10,17 +10,25 @@ import os
 import sys
 
 from .agent import Agent
-from .robot import SimRobot
+from .robot import Robot, SimRobot
 from .speech import keyboard_listener, microphone_listener, speaker
 
 
 def main(argv: list[str] | None = None) -> int:
-    p = argparse.ArgumentParser(prog="hsrgpt", description="Talk to a Toyota HSR (or a simulated one) through an LLM agent.")
-    p.add_argument("--hsr", metavar="LOCATIONS_YAML", help="drive a real HSR; the file names map poses (see locations.example.yaml)")
+    p = argparse.ArgumentParser(
+        prog="hsrgpt", description="Talk to a Toyota HSR (or a simulated one) through an LLM agent."
+    )
+    p.add_argument(
+        "--hsr",
+        metavar="LOCATIONS_YAML",
+        help="drive a real HSR; the file names map poses (see locations.example.yaml)",
+    )
     p.add_argument("--voice", action="store_true", help="listen on the microphone and speak replies")
     p.add_argument("--wake", default="hey tofu", help="wake phrase in voice mode (default: %(default)s)")
     p.add_argument("--sleep", default="bye", help="phrase that ends a conversation (default: %(default)s)")
-    p.add_argument("--model", default=os.environ.get("HSRGPT_MODEL", "gpt-4o-mini"), help="OpenAI model (env HSRGPT_MODEL)")
+    p.add_argument(
+        "--model", default=os.environ.get("HSRGPT_MODEL", "gpt-4o-mini"), help="OpenAI model (env HSRGPT_MODEL)"
+    )
     p.add_argument("--history", default="history", help="where finished conversations are saved")
     args = p.parse_args(argv)
 
@@ -29,17 +37,21 @@ def main(argv: list[str] | None = None) -> int:
         return 1
     from openai import OpenAI
 
+    robot: Robot
     if args.hsr:
         from .hsr import HSRRobot
 
         robot = HSRRobot(args.hsr)
     else:
-        robot = SimRobot()
-        print(f"[sim] places: {', '.join(robot.locations())}. You are in the {robot.user_location}.")
+        sim = SimRobot()
+        print(f"[sim] places: {', '.join(sim.locations())}. You are in the {sim.user_location}.")
+        robot = sim
 
     listen = microphone_listener() if args.voice else keyboard_listener()
     say = speaker(robot, args.voice)
-    show_tool = lambda name, a, result: print(f"  · {name}({a}) -> {result}")
+
+    def show_tool(name: str, arguments: str, result: str) -> None:
+        print(f"  · {name}({arguments}) -> {result}")
 
     agent: Agent | None = None
     awake = not args.voice  # typing is always "awake"; voice waits for the wake phrase
