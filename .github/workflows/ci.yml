@@ -1,0 +1,27 @@
+name: ci
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    # The official Python images, because current runner images no longer provide 3.8 or 3.9.
+    container: python:${{ matrix.python-version }}-slim
+    strategy:
+      fail-fast: false
+      matrix:
+        # 3.8 is what ROS Noetic ships; 3.13 is the newest supported.
+        python-version: ["3.8", "3.9", "3.11", "3.13"]
+    steps:
+      - uses: actions/checkout@v7
+      - run: pip install -e ".[dev]"
+      - run: ruff check .
+      - run: ruff format --check .
+      - run: mypy
+      - run: pytest
